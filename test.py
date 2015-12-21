@@ -1,4 +1,4 @@
-mport requests
+import requests
 import time
 
 Apiurl = 'http://ec2-52-10-210-159.us-west-2.compute.amazonaws.com:8080'
