@@ -49,7 +49,8 @@ var server = http.createServer(function (req, res) {
 
         var s3 = new AWS.S3();
         var params = {Bucket: 'robot-gardener',
-                      Key: year.toString() + month.toString() + day.toString() + '/' + hour.toString() + min.toString() + sec.toString() + '.json',
+                      Key: 'current.json',
+                      ACL: 'public-read',
                       Body: chunk.toString() };
 
 
