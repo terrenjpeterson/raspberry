@@ -5,8 +5,6 @@ AWS.config.region = 'us-west-2';
 
 var server = http.createServer(function (req, res) {
 
-//  console.log("Method Called: " + req.method);
-
   switch(req.method) {
     case 'GET':
       res.writeHead(200, {'Content-Type': 'text/plain'});
@@ -25,9 +23,9 @@ var server = http.createServer(function (req, res) {
 
         currData = sensorData.toString();
 
-        console.log("writing : " + currData);
+        console.log("processing sensor reading : " + currData);
 
-        // create a timestamp
+        // create a timestamp that will be used in processing the data
 
         var date = new Date();
 
@@ -48,10 +46,8 @@ var server = http.createServer(function (req, res) {
         var day  = date.getDate();
             day = (day < 10 ? "0" : "") + day;
 
-        var recordDate = year + ":" + month + ":" + day;
-        var recordTime = hour + ":" + min + ":" + sec;
-
-        console.log('date: ' + recordDate + ' time: ' + recordTime);
+//        var recordDate = year + ":" + month + ":" + day;
+//        var recordTime = hour + ":" + min + ":" + sec;
 
         // first overwrite current data to display on dashboard
 
@@ -66,18 +62,12 @@ var server = http.createServer(function (req, res) {
           if (err) {
             console.log("Error uploading data: ", err);
           } else {
-            console.log("Successfully uploaded data");
-
             // first get current array of data for the date
 
             var s3 = new AWS.S3();
 
             var priorHistParams = {Bucket: 'robot-gardener',
                                    Key: year + month + day + ".json"};
-
-            console.log("getting prior history");
-
-            console.log("parameters: " + JSON.stringify(priorHistParams));
 
             s3.getObject(priorHistParams, function(err, data) {
               if(err) {
@@ -87,7 +77,7 @@ var server = http.createServer(function (req, res) {
 
                 var histDataArray = eval('(' + data.Body + ')');
 
-                // now write to history table
+                // now add to the array containing all of the history for the day
   
                 var convData = eval('(' + sensorData + ')');
 
@@ -100,7 +90,7 @@ var server = http.createServer(function (req, res) {
 
                 var saveData = JSON.stringify(histDataArray);
 
-                console.log("writing history: " + saveData);
+                // then replace the array in the S3 bucket
 
                 var s3 = new AWS.S3();
                 var histParams = {Bucket: 'robot-gardener',
@@ -112,7 +102,7 @@ var server = http.createServer(function (req, res) {
                   if (err) {
                     console.log("Error uploading history data: ", err);
                     } else {
-                    console.log("Successfully uploaded history");
+//                    console.log("Successfully uploaded history");
                   }
                 });
 
@@ -120,14 +110,10 @@ var server = http.createServer(function (req, res) {
 
                 res.writeHead(200, {'Content-Type': 'text/plain'});
                 res.end('Received Data');
-
               }
             });
           }
         });
-
-//        res.writeHead(200, {'Content-Type': 'text/plain'});
-//        res.end('Received Data');
       });
   }
 });
