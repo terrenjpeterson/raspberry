@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <div>
+      <h1>Current Garden Environment</h2>
+    </div>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["gauge"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+
+        var xhttp = new XMLHttpRequest();
+            xhttp.addEventListener("load", buildGraph, false);
+            xhttp.open("GET", "https://xzmez6qe1a.execute-api.us-west-2.amazonaws.com/prod");
+            xhttp.send();
+
+        function buildGraph(evt) {
+          var dataReturned = xhttp.response;
+          var probeData = eval('(' + dataReturned + ')');
+
+          var probeTemp = Number(probeData.temperature);
+          var probeHumidity = Number(probeData.humidity);
+
+          var data = google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
+            ['Temp (in F)', probeTemp],
+            ['Humidity', probeHumidity]
+          ]);
+
+          var options = {
+            width: 1200, height: 360,
+            redFrom: 90, redTo: 100,
+            yellowFrom: 50, yellowTo: 90,
+            yellowColor: '#00FF00',
+            minorTicks: 10, min: 50
+          };
+
+          var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+
+          chart.draw(data, options);
+
+          setInterval(function() {
+
+            var xhttp = new XMLHttpRequest();
+                xhttp.addEventListener("load", updateGraph, false);
+                xhttp.open("GET", "https://xzmez6qe1a.execute-api.us-west-2.amazonaws.com/prod");
+                xhttp.send();
+
+            function updateGraph(evt) {
+
+              var dataReturned = xhttp.response;
+              var probeData = eval('(' + dataReturned + ')');
+
+              var probeTemp = Number(probeData.temperature);
+              var probeHumidity = Number(probeData.humidity);
+
+              data.setValue(0, 1, probeTemp);
+              chart.draw(data, options);
+
+              data.setValue(1, 1, probeHumidity);
+              chart.draw(data, options);
+
+            };
+
+          }, 10000);
+
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <div id="chart_div" style="width: 400px; height: 120px;"></div>
+  </body>
+</html>
