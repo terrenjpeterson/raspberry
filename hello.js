@@ -14,13 +14,21 @@ var server = http.createServer(function (req, res) {
       console.log('Web Server Called : ' + req.url);
 
     case 'POST':
-//      console.log('processing data');
+
+      var sensorData = "";
 
       req.on('data', function(chunk) {
-        console.log("Recieved body data: " + chunk.toString());
+        sensorData += chunk;
+      });
+
+      req.on('end', function() {
+
+        currData = sensorData.toString();
+
+        console.log("writing : " + currData);
 
         // create a timestamp
- 
+
         var date = new Date();
 
         var hour = date.getHours();
@@ -45,13 +53,13 @@ var server = http.createServer(function (req, res) {
 
         console.log('date: ' + recordDate + ' time: ' + recordTime);
 
-        console.log("posting to S3");
+        // first overwrite current data to display on dashboard
 
         var s3 = new AWS.S3();
         var params = {Bucket: 'robot-gardener',
                       Key: 'current.json',
                       ACL: 'public-read',
-                      Body: chunk.toString() };
+                      Body: currData };
 
 
         s3.putObject(params, function(err,data) {
@@ -59,13 +67,67 @@ var server = http.createServer(function (req, res) {
             console.log("Error uploading data: ", err);
           } else {
             console.log("Successfully uploaded data");
+
+            // first get current array of data for the date
+
+            var s3 = new AWS.S3();
+
+            var priorHistParams = {Bucket: 'robot-gardener',
+                                   Key: year + month + day + ".json"};
+
+            console.log("getting prior history");
+
+            console.log("parameters: " + JSON.stringify(priorHistParams));
+
+            s3.getObject(priorHistParams, function(err, data) {
+              if(err) {
+                console.log("error finding history array: " + err);
+                var histDataArray = [];
+              } else { 
+
+                var histDataArray = eval('(' + data.Body + ')');
+
+                // now write to history table
+  
+                var convData = eval('(' + sensorData + ')');
+
+                var histData = {};
+                    histData.readTime = convData.read_time;
+                    histData.temp     = convData.temperature;
+                    histData.humidity = convData.humidity;
+
+                histDataArray.push(histData);
+
+                var saveData = JSON.stringify(histDataArray);
+
+                console.log("writing history: " + saveData);
+
+                var s3 = new AWS.S3();
+                var histParams = {Bucket: 'robot-gardener',
+                                  Key: year + month + day + '.json',
+                                  ACL: 'public-read',
+                                  Body: saveData };
+
+                s3.putObject(histParams, function(err, data) {
+                  if (err) {
+                    console.log("Error uploading history data: ", err);
+                    } else {
+                    console.log("Successfully uploaded history");
+                  }
+                });
+
+                // then return the call back to the HTTP request
+
+                res.writeHead(200, {'Content-Type': 'text/plain'});
+                res.end('Received Data');
+
+              }
+            });
           }
         });
-      });
 
-      req.on('end', function() {
-        res.writeHead(200, {'Content-Type': 'text/plain'});
-        res.end('Received Data');
+//        res.writeHead(200, {'Content-Type': 'text/plain'});
+//        res.end('Received Data');
       });
   }
 });
