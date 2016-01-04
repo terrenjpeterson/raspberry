@@ -30,26 +30,11 @@ app.post('/post', function(req, res){
 
     console.log("processing sensor reading : " + currData);
 
-    // create a timestamp that will be used in processing the data
+    // creating the path to save the reading based on the date from the sensor
 
-    var date = new Date();
+    var sensorDate = eval('(' + currData + ')').read_date;
 
-    var hour = date.getHours();
-        hour = (hour < 10 ? "0" : "") + hour;
-
-    var min  = date.getMinutes();
-        min = (min < 10 ? "0" : "") + min;
-
-    var sec  = date.getSeconds();
-        sec = (sec < 10 ? "0" : "") + sec;
-
-    var year = date.getFullYear();
-
-    var month = date.getMonth() + 1;
-        month = (month < 10 ? "0" : "") + month;
-
-    var day  = date.getDate();
-        day = (day < 10 ? "0" : "") + day;
+    var pathDate = sensorDate.substring(0,4) + sensorDate.substring(5,7) + sensorDate.substring(8,10);
 
     // first overwrite current data to display on dashboard
 
@@ -58,7 +43,6 @@ app.post('/post', function(req, res){
                   Key: 'current.json',
                   ACL: 'public-read',
                   Body: currData };
-
 
     s3.putObject(params, function(err,data) {
       if (err) {
@@ -69,7 +53,7 @@ app.post('/post', function(req, res){
         var s3 = new AWS.S3();
 
         var priorHistParams = {Bucket: 'robot-gardener',
-                               Key: year + month + day + ".json"};
+                               Key: pathDate + ".json"};
 
         s3.getObject(priorHistParams, function(err, data) {
           if(err) {
@@ -97,7 +81,7 @@ app.post('/post', function(req, res){
 
             var s3 = new AWS.S3();
             var histParams = {Bucket: 'robot-gardener',
-                              Key: year + month + day + '.json',
+                              Key: pathDate + '.json',
                               ACL: 'public-read',
                               Body: saveData };
 
