@@ -37,9 +37,9 @@ f = open('datafile.dat', 'a')
 data = {}
 data['sensor'] = 'AM2302'
 
-# establish the endpoint that the API will be located at 
+# Establish the endpoint that the API will be located at using the 8080 port.
+# This is the name of the EC2 instance where the garden.js program runs at.
 Apiurl = 'http://ec2-52-34-228-66.us-west-2.compute.amazonaws.com:8080'
-#Apiurl = 'http://7yyzw36gda.execute-api.us-west-2.amazonaws.com/prod'
 
 # Try to grab a sensor reading.  Use the read_retry method which will retry up
 # to 15 times to get a sensor reading (waiting 2 seconds between each retry).
