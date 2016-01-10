@@ -74,10 +74,13 @@
       google.setOnLoadCallback(drawChart);
 
       function drawChart() {
+        // variable for API that abstracts where the latest sensor data is located
+        var Apiurl = "https://xzmez6qe1a.execute-api.us-west-2.amazonaws.com/prod";
+
         // call an API to get current data
         var xhttp = new XMLHttpRequest();
             xhttp.addEventListener("load", buildGraph, false);
-            xhttp.open("GET", "https://xzmez6qe1a.execute-api.us-west-2.amazonaws.com/prod");
+            xhttp.open("GET", Apiurl);
             xhttp.send();
 
         // this function builds the chart the initial time
@@ -110,7 +113,7 @@
 
             var xhttp = new XMLHttpRequest();
                 xhttp.addEventListener("load", updateGraph, false);
-                xhttp.open("GET", "https://xzmez6qe1a.execute-api.us-west-2.amazonaws.com/prod");
+                xhttp.open("GET", Apiurl);
                 xhttp.send();
 
             function updateGraph(evt) {
