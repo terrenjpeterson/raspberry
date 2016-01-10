@@ -10,13 +10,30 @@ exports.handler = function(event, context) {
     // start executing function
     console.log('processing request');
     
-    //console.log('event' + JSON.stringify(event));
+    // build the file name where the data is stored based on the current date
+    
+    var date = new Date();
+
+    var year = date.getFullYear();
+    
+    var month = date.getMonth() + 1;
+        month = (month < 10 ? "0" : "") + month;
+        
+    var day = date.getDate();
+
+    // adjust for current timezone as EST is five hours behind UTC
+    if (date.getHours() < 5) {day = day - 1}
+
+        day = (day < 10 ? "0" : "") + day;
+        
+    var dataFile = year + month + day + '.json';
+    
     // pull the history array for a given day
     
     var s3 = new aws.S3();
     
     var getParams = {Bucket : 'robot-gardener', 
-                     Key : '20160101.json'}; 
+                     Key : dataFile}; 
 
     console.log('attempt to pull an object from an s3 bucket' + JSON.stringify(getParams));
 
