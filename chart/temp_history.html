@@ -14,9 +14,12 @@
 
       function drawChart() {
 
+        // variable for API that abstracts where the latest sensor data is located
+        var Apiurl = "https://09gc32h0p8.execute-api.us-west-2.amazonaws.com/prod";
+
         var xhttp = new XMLHttpRequest();
             xhttp.addEventListener("load", buildGraph, false);
-            xhttp.open("GET", "https://09gc32h0p8.execute-api.us-west-2.amazonaws.com/prod");
+            xhttp.open("GET", Apiurl);
             xhttp.send();
 
         function buildGraph(evt) {
