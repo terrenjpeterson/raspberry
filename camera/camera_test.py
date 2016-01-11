@@ -15,6 +15,9 @@ print curr_dt_tm
 
 camera = picamera.PiCamera()
 
+camera.vflip = True
+camera.hflip = True
+
 # set resolution of the camera
 camera.resolution = (2400, 1200)
 camera.start_preview()
@@ -22,7 +25,7 @@ camera.start_preview()
 # overlay text on top of the photo
 camera.annotate_text = 'Hello My Young Plants!\n' + curr_dt_tm
 
-time.sleep(2)
+time.sleep(10)
 
 # capture the photo to a local file system
-camera.capture('test.jpg')
+camera.capture('20160110.jpg')
