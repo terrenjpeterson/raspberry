@@ -1,8 +1,11 @@
-// lambda function written in nodeJS to get an article in S3
+// lambda function written in nodeJS to aggregate sensor data for the current date
 
 console.log('loading required functions');
 
 var aws = require('aws-sdk');
+
+// this is the bucket where the sensor data is stored.
+var dataBucket = 'robot-gardener';
 
 console.log('starting to execute function');
 
@@ -32,7 +35,7 @@ exports.handler = function(event, context) {
     
     var s3 = new aws.S3();
     
-    var getParams = {Bucket : 'robot-gardener', 
+    var getParams = {Bucket : dataBucket, 
                      Key : dataFile}; 
 
     console.log('attempt to pull an object from an s3 bucket' + JSON.stringify(getParams));
