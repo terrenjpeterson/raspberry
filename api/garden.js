@@ -104,17 +104,51 @@ app.post('/post', function(req, res){
   });
 });
 
+// this API is used to upload an image to an S3 bucket and is coming from the RaPi
+
 app.post('/photo', function(req, res){
 
+  // sensorData will be the string that is the image data
+
   var sensorData = "";
+  var counter = 0;
 
   req.on('data', function(chunk) {
 
-    console.log('data received: ' + sensorData.length );
+    counter += 1;
+
+    console.log('data received: ' + sensorData.length + ' counter: ' + counter);
+
     sensorData += chunk;
 
+    // need to strip off header
+
+    if (counter == 1) {
+      var dataBit = 0;
+      var fullData = '';
+
+      console.log('chunk length: ' + chunk.length);
+
+      // the first 109 characters are padded header
+
+      while (dataBit < 109)
+        { 
+         console.log('checking bit: ' + dataBit + ' data: ' + sensorData.charAt(dataBit));
+         fullData += sensorData.charAt(dataBit);
+         dataBit += 1;       
+        };
+
+      // this is what was stripped off the first block received
+      console.log('total header: ' + fullData);
+    };
+
     if (sensorData.length < 10000)
-      console.log(chunk.toString);
+      console.log(chunk.toString());
+
+    if (counter > 1345)
+      console.log(chunk.toString());
+
+    // write the block of data to the local file
 
     fs.appendFileSync('garden.jpg', chunk, encoding='binary');
 
