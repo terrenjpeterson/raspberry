@@ -3,6 +3,7 @@
 var http    = require('http');
 var AWS     = require('aws-sdk');
 var express = require('express');
+var fs      = require('fs');
 
 // for AWS - using the US-WEST (OREGON) region
 AWS.config.region = 'us-west-2';
@@ -109,15 +110,49 @@ app.post('/photo', function(req, res){
 
   req.on('data', function(chunk) {
 
-    console.log('data received');
+    console.log('data received: ' + sensorData.length );
     sensorData += chunk;
+
+    if (sensorData.length < 10000)
+      console.log(chunk.toString);
+
+    fs.appendFileSync('garden.jpg', chunk, encoding='binary');
 
   });
 
   req.on('end', function() {
 
     console.log('upload complete');
-    res.send('Upload Complete');
+
+    var s3 = new AWS.S3();
+
+    // read locally written temp file and then load into a buffer
+
+    var tempFile = fs.readFileSync('garden.jpg', 'binary');
+
+    console.log('read in file of size : ' + tempFile.length);
+
+    var uploadImage = new Buffer(tempFile, 'binary');
+
+    console.log('buffer size : ' + uploadImage.length);
+
+    // now write to an S3 bucket for permanent storage
+
+    var params = {Bucket: 'robot-gardener',
+                  Key: 'garden.jpg',
+                  ACL: 'public-read',
+                  Body: uploadImage,
+                  ContentType: 'image/jpeg'};
+
+    s3.putObject(params, function(err, data) {
+      if (err) {
+        console.log('Error putting photo into S3: ' + err);
+        res.send('Upload Complete - Upload Error');
+      } else {
+        console.log('Successfully uploaded new garden image to AWS-S3');
+        res.send('Upload Complete');
+      }
+    });
 
   });
 });
