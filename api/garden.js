@@ -5,14 +5,14 @@ var AWS     = require('aws-sdk');
 var express = require('express');
 
 // for AWS - using the US-WEST (OREGON) region
-
 AWS.config.region = 'us-west-2';
 
 // create the app server
-
 var app = express();
-
 var server = http.createServer(app);
+
+// this is the name of the bucket that is used 
+var dataBucket = 'robot-gardener';
 
 // general API for posting temperature and humidity data
 
@@ -39,7 +39,7 @@ app.post('/post', function(req, res){
     // first overwrite current data to display on dashboard
 
     var s3 = new AWS.S3();
-    var params = {Bucket: 'robot-gardener',
+    var params = {Bucket: dataBucket,
                   Key: 'current.json',
                   ACL: 'public-read',
                   Body: currData };
@@ -52,7 +52,7 @@ app.post('/post', function(req, res){
 
         var s3 = new AWS.S3();
 
-        var priorHistParams = {Bucket: 'robot-gardener',
+        var priorHistParams = {Bucket: dataBucket,
                                Key: pathDate + ".json"};
 
         s3.getObject(priorHistParams, function(err, data) {
@@ -80,7 +80,7 @@ app.post('/post', function(req, res){
             // then replace the array in the S3 bucket
 
             var s3 = new AWS.S3();
-            var histParams = {Bucket: 'robot-gardener',
+            var histParams = {Bucket: dataBucket,
                               Key: pathDate + '.json',
                               ACL: 'public-read',
                               Body: saveData };
@@ -100,6 +100,25 @@ app.post('/post', function(req, res){
         });
       }
     });
+  });
+});
+
+app.post('/photo', function(req, res){
+
+  var sensorData = "";
+
+  req.on('data', function(chunk) {
+
+    console.log('data received');
+    sensorData += chunk;
+
+  });
+
+  req.on('end', function() {
+
+    console.log('upload complete');
+    res.send('Upload Complete');
+
   });
 });
 
