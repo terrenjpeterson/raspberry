@@ -112,12 +112,13 @@ app.post('/photo', function(req, res){
 
   var sensorData = "";
   var counter = 0;
+  var lastChunk = "";
 
   req.on('data', function(chunk) {
 
     counter += 1;
 
-    console.log('data received: ' + sensorData.length + ' counter: ' + counter);
+    //console.log('data received: ' + sensorData.length + ' counter: ' + counter);
 
     sensorData += chunk;
 
@@ -126,6 +127,7 @@ app.post('/photo', function(req, res){
     if (counter == 1) {
       var dataBit = 0;
       var fullData = '';
+      var readData = '';
 
       console.log('chunk length: ' + chunk.length);
 
@@ -138,25 +140,33 @@ app.post('/photo', function(req, res){
          dataBit += 1;       
         };
 
+      while (dataBit < chunk.length)
+        {
+         readData += sensorData.charAt(dataBit);
+         dataBit += 1;
+        };
+
       // this is what was stripped off the first block received
       console.log('total header: ' + fullData);
+      console.log('read data: ' + readData);
+      fs.appendFileSync('garden.jpg', readData, encoding='binary');
     };
 
-    if (sensorData.length < 10000)
-      console.log(chunk.toString());
+    if (counter > 1)
+      {
+       //console.log(chunk.toString());
+       lastChunk = chunk;
 
-    if (counter > 1345)
-      console.log(chunk.toString());
-
-    // write the block of data to the local file
-
-    fs.appendFileSync('garden.jpg', chunk, encoding='binary');
-
+       // write the block of data to the local file
+       fs.appendFileSync('garden.jpg', chunk, encoding='binary');
+      }
   });
 
   req.on('end', function() {
 
     console.log('upload complete');
+
+    console.log('last chunk: ' + lastChunk);
 
     var s3 = new AWS.S3();
 
