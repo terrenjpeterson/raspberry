@@ -20,10 +20,11 @@ These are installed on a Pi that can be used to capture images of the garden, an
 
 - camera_setup.py - script that runs the camera in preview mode for display onto a HDMI enabled monitor.
 - camera_test.py - python script that captures an image from a pi for recordkeeping.
-- upload_img.py - python script that uploads the current image from the camera using the AWS boto framework
-- aws.config - configuration file used to store user credentials to authenticate with AWS
-- tweet.py - python script that tweets out current sensor readings
-- twitter.config - configuration file used in the tweet.py script that needs to be set with twitter API settings
+- upload_img.py - python script that uploads the current image from the camera using the AWS boto framework.
+- aws.config - configuration file used to store user credentials to authenticate with AWS.
+- tweet.py - python script that tweets out current sensor readings.
+- twitter.config - configuration file used in the tweet.py script that needs to be set with twitter API settings.
+- social.sh - bash script that routinely calls the tweet and upload image scripts.
 
 chart folder
 -------------
