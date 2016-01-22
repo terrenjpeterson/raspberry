@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
@@ -23,47 +24,37 @@
   </head>
   <body>
 
-    <div class="navbar-wrapper">
-      <div class="container">
-
-        <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-              <ul class="nav navbar-nav">
-                <li class="active"><a href="index.html">HOME</a></li>
-
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">About Us<span class="caret"></span></a>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="design.html">Design</a></li>
-                    <li><a href="source.html">Source Code</a></li>
-                  </ul>
-                </li>
-
-		<li class="dropdown">
-                  <a href="index.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Current Data<span class="caret"></span></a>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="graph.html"></a>Current Data</li>
-                    <li><a href="temp_history.html"></a>Daily Chart</li>
-                  </ul>
-                </li>
-
-		<li><a href="blog.html">LATEST INFO</a></li>
+    <div class="navbar-fixed">
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">HOME</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">About Us<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="design.html">Design</a></li>
+                <li><a href="source.html">Source Code</a></li>
               </ul>
-
-            </div>
-          </div>
-        </nav>
-
-      </div>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Current Data<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="garden.html">Current Data</a></li>
+                <li><a href="temp_history.html">Daily Chart</a></li>
+              </ul>
+            </li>
+            <li><a href="blog.html">LATEST INFO</a></li>
+          </ul>
+        </div>
+      </nav>
     </div>
 
     <div class="container">
@@ -74,13 +65,10 @@
       google.setOnLoadCallback(drawChart);
 
       function drawChart() {
-        // variable for API that abstracts where the latest sensor data is located
-        var Apiurl = "https://xzmez6qe1a.execute-api.us-west-2.amazonaws.com/prod";
-
         // call an API to get current data
         var xhttp = new XMLHttpRequest();
             xhttp.addEventListener("load", buildGraph, false);
-            xhttp.open("GET", Apiurl);
+            xhttp.open("GET", "https://xzmez6qe1a.execute-api.us-west-2.amazonaws.com/prod");
             xhttp.send();
 
         // this function builds the chart the initial time
@@ -90,30 +78,49 @@
           var probeTemp = Number(probeData.temperature);
           var probeHumidity = Number(probeData.humidity);
 
-          var data = google.visualization.arrayToDataTable([
+          // the data variable is what contains the metrics for the chart and used in the draw() function
+          var dataTemp = google.visualization.arrayToDataTable([
             ['Label', 'Value'],
-            ['Temp (in F)', probeTemp],
+            ['Temp (in F)', probeTemp]
+          ]);
+
+          var dataHumid = google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
             ['Humidity', probeHumidity]
           ]);
 
-          var options = {
-            width: 1200, height: 360,
-            redFrom: 90, redTo: 100,
-            yellowFrom: 30, yellowTo: 90,
-            yellowColor: '#00FF00',
-            minorTicks: 10, min: 30
+          // this sets the options for the chart, and is used in the draw() function
+          var optionsHumid = {
+            width: 400, height: 400,
+            redFrom: 0, redTo: 30,
+            yellowFrom: 30, yellowTo: 40,
+            greenFrom: 40, greenTo: 100,
+            majorTicks: [0,20,40,60,80,100],
+            minorTicks: 10, min: 0
           };
 
-          var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+          var optionsTemp = {
+            width: 400, height: 400,
+            redFrom: 85, redTo: 100,
+            yellowFrom: 75, yellowTo: 85,
+            greenFrom: 50, greenTo: 75,
+            majorTicks: [50,60,70,80,90,100],
+            minorTicks: 10, min: 50 
+          };
 
-          chart.draw(data, options);
+          // the chart object will overlay the DOM node with a div id of chart_div
+          var chartHumid = new google.visualization.Gauge(document.getElementById('chart_div_humid'));
+          var chartTemp = new google.visualization.Gauge(document.getElementById('chart_div_temp'));
+
+          chartHumid.draw(dataHumid, optionsHumid);
+          chartTemp.draw(dataTemp, optionsTemp);
 
           // this executes on ten second intervals to refresh the chart dials
           setInterval(function() {
 
             var xhttp = new XMLHttpRequest();
                 xhttp.addEventListener("load", updateGraph, false);
-                xhttp.open("GET", Apiurl);
+                xhttp.open("GET", "https://xzmez6qe1a.execute-api.us-west-2.amazonaws.com/prod");
                 xhttp.send();
 
             function updateGraph(evt) {
@@ -122,15 +129,19 @@
               var probeTemp = Number(probeData.temperature);
               var probeHumidity = Number(probeData.humidity);
 
-              data.setValue(0, 1, probeTemp);
-              chart.draw(data, options);
-              data.setValue(1, 1, probeHumidity);
-              chart.draw(data, options);
+              dataTemp.setValue(0, 1, probeTemp);
+              chartTemp.draw(dataTemp, optionsTemp);
+
+              dataHumid.setValue(0, 1, probeHumidity);
+              chartHumid.draw(dataHumid, optionsHumid);
             };
           }, 10000);
         };
       }
+
     </script>
+
+      <br><br><br>
 
       <div class="row featurette">
         <div class="col-md-12">
@@ -139,7 +150,17 @@
       </div>
 
       <div class="row featurette">
-        <div id="chart_div" class="col-md-12">
+        <div id="chart_div_temp" class="col-md-6">
+        </div>
+        <div id="chart_div_humid" class="col-md-6">
+        </div>
+      </div>
+
+      <div class="row featurette">
+        <div class="col-md-12">
+          <p>
+            <span>Readings are updated every 10-15 seconds.</span>
+          </p>
         </div>
       </div>
 

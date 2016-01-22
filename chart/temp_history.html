@@ -1,5 +1,62 @@
-  <html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+
+    <title>Robot Gardening</title>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+
+    <div class="navbar-fixed">
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">HOME</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">About Us<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="design.html">Design</a></li>
+                <li><a href="source.html">Source Code</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Current Data<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="garden.html">Current Data</a></li>
+                <li><a href="temp_history.html">Daily Chart</a></li>
+              </ul>
+            </li>
+            <li><a href="blog.html">LATEST INFO</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
     <script type="text/javascript"
           src="https://www.google.com/jsapi?autoload={
             'modules':[{
@@ -14,12 +71,9 @@
 
       function drawChart() {
 
-        // variable for API that abstracts where the latest sensor data is located
-        var Apiurl = "https://09gc32h0p8.execute-api.us-west-2.amazonaws.com/prod";
-
         var xhttp = new XMLHttpRequest();
             xhttp.addEventListener("load", buildGraph, false);
-            xhttp.open("GET", Apiurl);
+            xhttp.open("GET", "https://09gc32h0p8.execute-api.us-west-2.amazonaws.com/prod");
             xhttp.send();
 
         function buildGraph(evt) {
@@ -37,7 +91,8 @@
 
           for (i = 0; i < tempArray.length; i++) {
             newRow = [];
-            newRow.push(tempArray[i].readTime);
+            newTimeArray = tempArray[i].readTime.split(':');
+            newRow.push(newTimeArray);
             newRow.push(Number(tempArray[i].temp));
             newRow.push(Number(tempArray[i].humidity));
             testArray.push(newRow);
@@ -47,6 +102,21 @@
 
           var options = {
             title: 'Sensor Data over Time',
+            width: 1200,
+            height: 600,
+            series: {
+              0: {targetAxisIndex: 0},
+              1: {targetAxisIndex: 1}
+            },
+            hAxis: {
+              min: 0,
+              gridlines: {count: 24}
+            },
+            vAxes: {
+              // Adds titles to each axis.
+              0: {title: 'Temps (Farenheit)'},
+              1: {title: 'Relative Humidity'}
+            },
             curveType: 'function',
             legend: { position: 'bottom' }
           };
@@ -58,8 +128,19 @@
         }
       }
     </script>
-  </head>
-  <body>
-    <div id="curve_chart" style="width: 1600px; height: 800px"></div>
+
+      <div class="row featurette">
+        <div class="col-md-12">
+          <div id="curve_chart">
+          </div>  
+        </div>
+      </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
   </body>
 </html>
