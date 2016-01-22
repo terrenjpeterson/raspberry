@@ -22,56 +22,112 @@
     <![endif]-->
 
   </head>
+
   <body>
-
-    <div class="navbar-wrapper">
-      <div class="container">
-
-        <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-          <div class="container">
-            <div class="navbar-header">
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-              <ul class="nav navbar-nav">
-                <li class="active"><a href="index.html">HOME</a></li>
-
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">About Us<span class="caret"></span></a>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="design.html">Design</a></li>
-                    <li><a href="source.html">Source Code</a></li>
-                  </ul>
-                </li>
-
-                <li class="dropdown">
-                  <a href="index.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Current Data<span class="caret"></span></a>
-                  <ul class="dropdown-menu" role="menu">
-                    <li><a href="graph.html"></a>Current Data</li>
-                    <li><a href="temp_history.html"></a>Daily Chart</li>
-                  </ul>
-                </li>
-
-                <li><a href="blog.html">LATEST INFO</a></li>
+    <div class="navbar-fixed">
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">HOME</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">About Us<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="design.html">Design</a></li>
+                <li><a href="source.html">Source Code</a></li>
               </ul>
-
-            </div>
-          </div>
-        </nav>
-
-      </div>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Current Data<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="garden.html">Current Data</a></li>
+                <li><a href="temp_history.html">Daily Chart</a></li>
+              </ul>
+            </li>
+            <li><a href="blog.html">LATEST INFO</a></li>
+          </ul>
+        </div>
+      </nav>
     </div>
+
+    <br><br><br>
 
     <div class="container">
       <div class="row featurette">
         <div class="col-md-12">
           <h2 class="featurette heading">Latest Growth</h2>
           <p>Keep up with how the plants are doing.</p>
+        </div>
+      </div>
+
+      <div class="row featurette">
+        <div class="col-md-12">
+          <h3 class="featurette heading">Stationary Camera Set</h3>
+          <p>
+            <h4 class="featurette heading">January 18, 2016</h4>
+            <br>
+            <span>In an attempt to get some images captured of the photos when I'm out of town, I've now permanently mounted the camera at the end of the </span>
+            <span>growing area, and have written another app that will relay the photos out to AWS, and overlay them onto the home page as well as off into </span>
+            <span>an archive folder. Initial setting is for them to be taken every three hours, including overnight. It should give the ability to create </span>
+            <span>timeseries photos showing the plants growing over time.</span><br>
+            <br>
+            <span>Looking at the photo below, you can tell that the lettuce continues to perk up (light green leaves on left side) and the tomato plants </span>
+            <span>are growing well on the bottom right side of the image. The tallest is more than an inch, and the leaves are noticably getting longer as well. </span>
+            <span>The beans are in the back right, and continue to be very wilted. The cilantro is in the back left, and difficult to see from this angle. </span>
+            <span>What remains covered is the secon wave of cilantro that was planted five days ago.</span><br>
+            <br>
+            <span>I will be working on some sort of labeling scheme that will assist tracking of these going forward, and hopefully in a few weeks there will be </span>
+            <span>plenty of growth to capture!</span>
+          <p>        
+        </div>
+      </div>
+      <div class="row featurette">
+        <div class="col-md-12">
+          <p>
+            <img class="featurette-image img-responsive" src="https://s3-us-west-2.amazonaws.com/robot-gardener/2016-01-18-11.jpg" alt="garden level photo">
+          <p>
+        </div>
+      </div>
+
+      <div class="row featurette">
+        <div class="col-md-12">
+          <h3 class="featurette heading">Second Wave of Plants Sprouted</h3>
+          <p>
+            <h4 class="featurette heading">January 17, 2016</h4>
+            <br>
+            <span>Once again, it only took a few days for the lettuce plants to germinate, so a replacement wave of plants are available in case those </span>
+            <span>that were dried out earlier in the week don't make it. I've uncovered them, and there are plenty of small leaves now visible. The </span>
+            <span>cilantro haven't yet surfaced, but they were several days behind the lettuce with the first round, so I'd expect them to peak through </span>
+            <span>later this week.</span><br>
+            <br>
+            <span>The garden does seem to have stabilized, with the plants now being watered approximately every other day. I've only gotten rid of four </span>
+            <span>plants damaged from the drought, and while the beans are taking a while to bounce back, an additional round of leaves are beginning to form </span>
+            <span>so perhaps they remain relatively unharmed.</span>
+          <p>
+        </div>
+      </div>
+
+      <div class="row featurette">
+        <div class="col-md-6">
+          <h3 class="featurette heading">Second Set of Leaves</h3>
+          <p>
+            <h4 class="featurette heading">January 16, 2016</h4>
+            <br>
+            <span>The plants are continuing to grow, and it's now noticable the differences between the different seedlings. Here's a close-up of one of </span>
+            <span>the young cilantro plants that you can see clear definition in the leaf structure with the second set of leaves and their jagged edges.</span>
+          <p>
+        </div>
+        <div class="col-md-6">
+          <p>
+            <img class="featurette-image img-responsive" src="https://s3-us-west-2.amazonaws.com/robot-gardener/images/cilantro-20160116.jpg" alt="young cilantro">
+          <p>
         </div>
       </div>
 
@@ -254,7 +310,7 @@
         </div>
         <div class="col-md-8">
           <p>
-            <img class="featurette-image img-responsive" src="https://s3-us-west-2.amazonaws.com/robot-gardener/images/seeds_long.jpg" style="HEIGHT: 200px" alt="seeds">
+            <img class="featurette-image img-responsive" src="https://s3-us-west-2.amazonaws.com/robot-gardener/images/seeds_long.jpg" style="HEIGHT: 200px" alt="seed packages">
           </p>
         </div>
       </div>
