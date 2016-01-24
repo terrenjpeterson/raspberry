@@ -41,6 +41,7 @@ sensor folder
 
 - simpletest.py - python process running locally on a pi leveraging the requests package to do HTTP requests
 - stream.sh - batch proces that recursively runs the sensor on the pi
+- readspi.py - python script that reads analog sensor readings using the SPI and an ADC chip
 
 Dependencies
 ------------
@@ -52,3 +53,7 @@ The heavy lifting of the charts is done by the Google Charts framework.  Here is
 information on how each chart type works.
 
 https://developers.google.com/chart/
+
+Reading the SPI pins on the Raspberry Pi. These pins are fed by the Analog to Digital converter.
+
+https://github.com/Gadgetoid/py-spidev
