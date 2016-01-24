@@ -6,5 +6,9 @@ do
     sudo python tweet.py
     sleep 10s
     sudo python upload_img.py
-    sleep 1h
+    sleep 2h
+    sudo python upload_img.py
+    sleep 2h
+    sudo python upload_img.py
+    sleep 2h
 done
