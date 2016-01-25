@@ -12,6 +12,7 @@ import time
 # this is needed for the API to work
 import json
 import requests
+import datetime
 
 # Open SPI bus
 spi = spidev.SpiDev()
@@ -35,6 +36,9 @@ max_reading = 1023 # this is the reading taken in air or completely dry dirt
 min_reading = 377 # this is the reading taken in a glass of water
 reading_range = max_reading - min_reading
 
+# location of the API
+Apiurl = 'http://ec2-52-34-244-227.us-west-2.compute.amazonaws.com:8080'
+
 while True:
 
   # Read the sensor, then calculate the relative reading (zero being dry)
@@ -44,6 +48,26 @@ while True:
   # Print out results
   print "--------------------------"
   print("Moisture: {} percent ({})".format(moisture_relative,moisture_level))
+
+  # create the payload object for the API call
+  data = {}
+
+  # get the current timestame and convert to string format
+  # then add to recorded object
+  current_datetime = str(datetime.datetime.now())
+
+  data['read_date'] = current_datetime[:10]
+  data['read_time'] = current_datetime[11:][:8]
+  data['sensor'] = 'YL-69'
+  #data['reading_time'] =
+  data['relative_moisture'] = moisture_relative
+
+  # convert to json format
+  json_data = json.dumps(data)
+
+  # call the API to store the sensor data
+  x = requests.post(Apiurl+'/saveMoistureReading', data = json_data)
+  #print 'Result of http request: ' + str(x.status_code)
 
   # Wait before repeating loop
   time.sleep(delay)
