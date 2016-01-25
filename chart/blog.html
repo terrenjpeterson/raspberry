@@ -69,6 +69,40 @@
 
       <div class="row featurette">
         <div class="col-md-12">
+          <h3 class="featurette heading">When to water the plants?</h3>
+          <p>
+            <h4 class="featurette heading">January 24, 2016</h4>
+            <br>
+            <span>The plants are doing well, but given the variety and number, it's hard to keep up with when each of them needs to </span>
+            <span>get watered. Based on "feel", I have been watering them approximately every other day, but given that I'm trying </span>
+            <span>trying to create a fully automated garden, I want to have some way to have technology help. My solution is to create </span>
+            <span>an app for this starting with detecting how moist the soil is.</span><br>
+            <br>
+            <span>The first step is in adding a new moisture sensor to the garden, so I purchased a YL-69 sensor and connected it to the </span>
+            <span>raspberry pi that also runs the camera on the end. Here's a photo of it wired on a breadboard, running through a ADC </span>
+            <span>Analog Digital Converter.</span>
+          <p>
+        </div>
+      </div>
+      <div class="row featurette">
+        <div class="col-md-12">
+          <p>
+            <img class="featurette-image img-responsive" src="https://s3-us-west-2.amazonaws.com/robot-gardener/images/moisture_sensor_pi.jpg" alt="moisture sensor">
+          <p>
+        </div>
+      </div>
+      <div class="row featurette">
+        <div class="col-md-12">
+          <p>
+            <span>I've written a script that then posts the readings out into the Cloud where the information is readily accessible. </span> 
+            <span>Next is to create a <a href="moisture.html">chart</a> that visualizes the information. Now I'll be able to start getting a </span>
+            <span>more scientific approach to when the plants are thirsty.</span>
+          <p>
+        </div>
+      </div>
+
+      <div class="row featurette">
+        <div class="col-md-12">
           <h3 class="featurette heading">Refactoring the Garden</h3>
           <p>
             <h4 class="featurette heading">January 22, 2016</h4>
