@@ -25,6 +25,7 @@ import Adafruit_DHT
 # added two libraries - one for formatting json objects, the other to create http requests
 import json
 import requests
+import datetime
 
 # parameters set based on model of sensor and pin location connected to pi
 sensor = Adafruit_DHT.DHT22
@@ -37,9 +38,16 @@ f = open('datafile.dat', 'a')
 data = {}
 data['sensor'] = 'AM2302'
 
-# Establish the endpoint that the API will be located at using the 8080 port.
-# This is the name of the EC2 instance where the garden.js program runs at.
-Apiurl = 'http://ec2-52-34-228-66.us-west-2.compute.amazonaws.com:8080'
+# establish the endpoint that the API will be located at 
+Apiurl = 'http://ec2-52-34-244-227.us-west-2.compute.amazonaws.com:8080/post'
+#Apiurl = 'https://2zsxv0zmz9.execute-api.us-west-2.amazonaws.com/prod'
+
+# get the current timestame and convert to string format
+# then add to recorded object
+current_datetime = str(datetime.datetime.now())
+
+data['read_date'] = current_datetime[:10]
+data['read_time'] = current_datetime[11:][:8]
 
 # Try to grab a sensor reading.  Use the read_retry method which will retry up
 # to 15 times to get a sensor reading (waiting 2 seconds between each retry).
@@ -62,7 +70,7 @@ if humidity is not None and temperature is not None:
         json_data = json.dumps(data)
         print 'Temp={0:0.1f}*F  Humidity={1:0.1f}%'.format(temperature, humidity)
         f.write(str(json_data)+'\n')
-        x = requests.post(Apiurl+'/post', data = json_data)
+        x = requests.post(Apiurl, data=json_data, verify=False)
         print 'Result of http request: ' + str(x.status_code)
 else:
         print 'Failed to get reading. Try again!'
