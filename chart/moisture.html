@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+
+    <title>Robot Gardening</title>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+  <body>
+
+    <div class="navbar-fixed">
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="index.html">HOME</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">About Us<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="design.html">Design</a></li>
+                <li><a href="source.html">Source Code</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Current Data<span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="garden.html">Current Data</a></li>
+                <li><a href="temp_history.html">Daily Chart</a></li>
+              </ul>
+            </li>
+            <li><a href="blog.html">LATEST INFO</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["gauge"]});
+      google.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        // call an API to get current data
+        var xhttp = new XMLHttpRequest();
+            xhttp.addEventListener("load", buildGraph, false);
+            xhttp.open("GET", "https://ynwvqnbg2j.execute-api.us-west-2.amazonaws.com/prod");
+            xhttp.send();
+
+        // this function builds the chart the initial time
+        function buildGraph(evt) {
+          var dataReturned = xhttp.response;
+          var probeData = eval('(' + dataReturned + ')');
+          var probeMoisture = Number(probeData.relative_moisture);
+
+          // the data variable is what contains the metrics for the chart and used in the draw() function
+          var dataMoisture = google.visualization.arrayToDataTable([
+            ['Label', 'Value'],
+            ['Percent', probeMoisture]
+          ]);
+
+          // this sets the options for the chart, and is used in the draw() function
+          var options = {
+            width: 400, height: 400,
+            redFrom: 0, redTo: 15,
+            yellowFrom: 15, yellowTo: 25,
+            greenFrom: 25, greenTo: 50,
+            max: 50,
+            majorTicks: [0,10,20,30,40,50],
+            minorTicks: 10, min: 0
+          };
+
+          // the chart object will overlay the DOM node with a div id of chart_div
+          var chartMoisture = new google.visualization.Gauge(document.getElementById('chart_div_moisture'));
+
+          chartMoisture.draw(dataMoisture, options);
+
+          // this executes on ten second intervals to refresh the chart dials
+          setInterval(function() {
+
+            var xhttp = new XMLHttpRequest();
+                xhttp.addEventListener("load", updateGraph, false);
+                xhttp.open("GET", "https://ynwvqnbg2j.execute-api.us-west-2.amazonaws.com/prod");
+                xhttp.send();
+
+            function updateGraph(evt) {
+              var dataReturned = xhttp.response;
+              var probeData = eval('(' + dataReturned + ')');
+              var probeMoisture = Number(probeData.relative_moisture);
+
+              dataMoisture.setValue(0, 1, probeMoisture);
+              chartMoisture.draw(dataMoisture, options);
+            };
+          }, 10000);
+        };
+      }
+
+    </script>
+
+      <br><br><br>
+
+      <div class="row featurette">
+        <div class="col-md-12">
+          <h2 class="featurette heading">Soil Moisture Conditions</h2>
+        </div>
+      </div>
+
+      <div class="row featurette">
+        <div id="chart_div_moisture" class="col-md-12">
+        </div>
+      </div>
+
+      <div class="row featurette">
+        <div class="col-md-12">
+          <p>
+            <span>Readings are updated every 10-15 seconds.</span>
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+  </body>
+</html>
