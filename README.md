@@ -32,9 +32,12 @@ HTML pages containing basic content for the website.  The first two pages are st
 
 - index.html - basic homepage that uses the twitter responsive design format.
 - blog.html - page capturing updates on how the garden is progressing.
+- design.html - page capturing key physical design aspects of the garden.
+- source.html - page capturing software aspects of the garden and a link back to the github repo.
 
 - garden.html - gauge chart that renders the most recent sensor data in an easy to read form.
 - temp_history.html - line chart that renders an array of sensor data for the current date into a chart format.
+- moisture.html - gauge chart that displays the soil moisture sensor reading.
 
 sensor folder
 -------------
