@@ -104,6 +104,96 @@ app.post('/post', function(req, res){
   });
 });
 
+// API for saving moisture sensor data
+
+app.post('/saveMoistureReading', function(req, res){
+
+  var sensorData = "";
+
+  req.on('data', function(chunk) {
+    sensorData += chunk;
+  });
+
+  req.on('end', function() {
+
+    currData = sensorData.toString();
+
+    console.log("processing sensor reading : " + currData);
+
+    // creating the path to save the reading based on the date from the sensor
+
+    var sensorDate = eval('(' + currData + ')').read_date;
+
+    var pathDate = sensorDate.substring(0,4) + sensorDate.substring(5,7) + sensorDate.substring(8,10);
+
+    // first overwrite current data to display on dashboard
+
+    var s3 = new AWS.S3();
+    var params = {Bucket: dataBucket,
+                  Key: 'moisture.json',
+                  ACL: 'public-read',
+                  Body: currData };
+
+    s3.putObject(params, function(err,data) {
+      if (err) {
+        console.log("Error uploading data: ", err);
+      } else {
+        // assuming the first step is successful, now save the data to a historical array
+
+        // first get current array of data for the date
+
+        var s3 = new AWS.S3();
+
+        var priorHistParams = {Bucket: dataBucket,
+                               Key: pathDate + "-moisture.json"};
+
+        s3.getObject(priorHistParams, function(err, data) {
+          if(err) {
+            // TODO: add logic to handle first reading of a day
+            console.log("error finding history array: " + err);
+            var histDataArray = [];
+          } else {
+
+            var histDataArray = eval('(' + data.Body + ')');
+
+            // now add to the array containing all of the history for the day
+
+            var convData = eval('(' + sensorData + ')');
+
+            var histData = {};
+                histData.readTime = convData.read_time;
+                histData.relativeMoisture = convData.relative_moisture;
+
+            histDataArray.push(histData);
+
+            var saveData = JSON.stringify(histDataArray);
+
+            // then replace the array in the S3 bucket
+
+            var s3 = new AWS.S3();
+            var histParams = {Bucket: dataBucket,
+                              Key: pathDate + '-moisture.json',
+                              ACL: 'public-read',
+                              Body: saveData };
+
+            s3.putObject(histParams, function(err, data) {
+              if (err) {
+                console.log("Error uploading history data: ", err);
+                } else {
+//                console.log("Successfully uploaded history");
+              }
+            });
+
+            // then return the call back to the HTTP request
+
+            res.send('Received Data');
+          }
+        });
+      }
+    });
+  });
+});
+
 // this API is used to upload an image to an S3 bucket and is coming from the RaPi
 
 app.post('/photo', function(req, res){
@@ -149,7 +239,7 @@ app.post('/photo', function(req, res){
       // this is what was stripped off the first block received
       console.log('total header: ' + fullData);
       console.log('read data: ' + readData);
-      fs.appendFileSync('garden.jpg', readData, encoding='binary');
+      fs.writeFileSync('garden.jpg', readData, encoding='binary');
     };
 
     if (counter > 1)
@@ -167,6 +257,19 @@ app.post('/photo', function(req, res){
     console.log('upload complete');
 
     console.log('last chunk: ' + lastChunk);
+    console.log('last chunk length: ' + lastChunk.length);
+
+    dataBit = lastChunk.length - 20;
+
+    console.log('data bit: ' + dataBit);
+
+    //console.log('substring: ' + trunkThis.substring(dataBit, lastChunk.length));
+
+    //while (dataBit < lastChunk.length)
+    //  {
+    //   console.log('checking bit: ' + dataBit + ' data: ' + lastChunk.charAt(dataBit));
+    //   dataBit += 1;
+    //  }
 
     var s3 = new AWS.S3();
 
