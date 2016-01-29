@@ -27,9 +27,7 @@ def ReadChannel(channel):
 
 # Define sensor channels - this is driven by the pin on the ADC
 moisture_channel = 0
-
-# Define delay between readings
-delay = 5
+plant_id = 'L-2-4'
 
 # Define maximum and minimum levels of sensor (this is when it is absolute dry and wet)
 max_reading = 1023 # this is the reading taken in air or completely dry dirt
@@ -39,35 +37,31 @@ reading_range = max_reading - min_reading
 # location of the API
 Apiurl = 'http://ec2-52-34-244-227.us-west-2.compute.amazonaws.com:8080'
 
-while True:
+# Read the sensor, then calculate the relative reading (zero being dry)
+moisture_level = ReadChannel(moisture_channel)
+moisture_relative = (100*(max_reading - moisture_level)/reading_range)
 
-  # Read the sensor, then calculate the relative reading (zero being dry)
-  moisture_level = ReadChannel(moisture_channel)
-  moisture_relative = (100*(max_reading - moisture_level)/reading_range)
+# create the payload object for the API call
+data = {}
 
-  # Print out results
-  print "--------------------------"
-  print("Moisture: {} percent ({})".format(moisture_relative,moisture_level))
+# get the current timestame and convert to string format
+# then add to recorded object
+current_datetime = str(datetime.datetime.now())
 
-  # create the payload object for the API call
-  data = {}
+data['read_date'] = current_datetime[:10]
+data['read_time'] = current_datetime[11:][:8]
+data['sensor'] = 'YL-69'
+data['relative_moisture'] = moisture_relative
+data['absolute_moisture'] = moisture_level
+data['plant_id'] = plant_id
 
-  # get the current timestame and convert to string format
-  # then add to recorded object
-  current_datetime = str(datetime.datetime.now())
+# Print out results
+print "--------------------------"
+print("Plant Id: {} Moisture: {} percent (absolute {})".format(plant_id, moisture_relative, moisture_level))
 
-  data['read_date'] = current_datetime[:10]
-  data['read_time'] = current_datetime[11:][:8]
-  data['sensor'] = 'YL-69'
-  #data['reading_time'] =
-  data['relative_moisture'] = moisture_relative
+# convert to json format
+json_data = json.dumps(data)
 
-  # convert to json format
-  json_data = json.dumps(data)
-
-  # call the API to store the sensor data
-  x = requests.post(Apiurl+'/saveMoistureReading', data = json_data)
-  #print 'Result of http request: ' + str(x.status_code)
-
-  # Wait before repeating loop
-  time.sleep(delay)
+# call the API to store the sensor data
+x = requests.post(Apiurl+'/saveMoistureReading', data = json_data)
+#print 'Result of http request: ' + str(x.status_code)
