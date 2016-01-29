@@ -161,8 +161,10 @@ app.post('/saveMoistureReading', function(req, res){
             var convData = eval('(' + sensorData + ')');
 
             var histData = {};
-                histData.readTime = convData.read_time;
+                histData.readTime         = convData.read_time;
                 histData.relativeMoisture = convData.relative_moisture;
+                histData.absoluteMoisture = convData.absolute_moisture;
+                histData.plantId          = convData.plant_id;
 
             histDataArray.push(histData);
 
