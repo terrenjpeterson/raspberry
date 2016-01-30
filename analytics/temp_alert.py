@@ -1,11 +1,15 @@
 from __future__ import print_function
 
+# import libraries to use AWS boto framework and translate json
 import json
 import boto3
 
 print('Loading function')
 
 def lambda_handler(event, context):
+    # configure parameter to specific notification topic
+    topic_arn = 'arn:aws:sns:us-west-2:034353605017:Garden-Notification'
+    
     # retrieve current conditions from S3 Bucket
     s3 = boto3.resource('s3')
     object = s3.Object('robot-gardener','current.json')
@@ -32,9 +36,12 @@ def lambda_handler(event, context):
         # Get the service resource
         client = boto3.client('sns')
 
+	# Customize the body of the e-mail with specifics on the temperature and time that it occurred at
+        alert_message = 'The most recent garden temperature reading was measured at %s F at %s' % (temperature, read_time)
+
         response = client.publish(
-            TopicArn='arn:aws:sns:us-west-2:034353605017:Garden-Notification',
-            Message='The most recent garden temperature reading was greater than 80 degrees.',
+            TopicArn=topic_arn,
+            Message=alert_message,
             Subject='Alert - Garden Temperatures are High',
             MessageStructure='string'
         )

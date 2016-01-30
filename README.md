@@ -5,7 +5,7 @@ This repo contains all of the source code needed to run a internet monitored gar
 
 https://www.hackster.io/terren/cloud-gardening-manage-indoor-food-gardens-using-iot-be95d1
 
-The code is packaged into four folders.
+The code is packaged into several folders.
 
 api folder
 ----------
@@ -45,6 +45,11 @@ sensor folder
 - simpletest.py - python process running locally on a pi leveraging the requests package to do HTTP requests
 - stream.sh - batch proces that recursively runs the sensor on the pi
 - readspi.py - python script that reads analog sensor readings using the SPI and an ADC chip
+
+analytics folder
+----------------
+
+- temp_alert.py - lambda function written in python that checks the latest temperature reading and sends a SNS notification in case the limit is reached.
 
 Dependencies
 ------------
