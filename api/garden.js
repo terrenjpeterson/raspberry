@@ -170,6 +170,7 @@ app.post('/saveMoistureReading', function(req, res){
                 histData.relativeMoisture = convData.relative_moisture;
                 histData.absoluteMoisture = convData.absolute_moisture;
                 histData.plantId          = convData.plant_id;
+                histData.sensorId         = convData.sensor_channel;
 
             histDataArray.push(histData);
 
