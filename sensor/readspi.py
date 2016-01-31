@@ -50,6 +50,7 @@ def StoreReading(channel,plant_id):
   data['read_date'] = current_datetime[:10]
   data['read_time'] = current_datetime[11:][:8]
   data['sensor'] = 'YL-69'
+  data['sensor_channel'] = channel
   data['relative_moisture'] = moisture_relative
   data['absolute_moisture'] = moisture_level
   data['plant_id'] = plant_id
