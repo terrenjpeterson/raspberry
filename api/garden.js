@@ -115,6 +115,7 @@ app.post('/saveMoistureReading', function(req, res){
   });
 
   req.on('end', function() {
+    // process data object that has been passed
 
     currData = sensorData.toString();
 
@@ -123,14 +124,18 @@ app.post('/saveMoistureReading', function(req, res){
     // creating the path to save the reading based on the date from the sensor
 
     var sensorDate = eval('(' + currData + ')').read_date;
-
     var pathDate = sensorDate.substring(0,4) + sensorDate.substring(5,7) + sensorDate.substring(8,10);
 
-    // first overwrite current data to display on dashboard
+    // determine which channel the sensor is for and set target object to be used when saving
+
+    var sensorChannel = eval('(' + currData + ')').sensor_channel;
+    var targetObject = 'moisture' + sensorChannel + '.json';
+
+    // first overwrite current channel object data that can be displayed on a dashboard
 
     var s3 = new AWS.S3();
     var params = {Bucket: dataBucket,
-                  Key: 'moisture.json',
+                  Key: targetObject,
                   ACL: 'public-read',
                   Body: currData };
 
