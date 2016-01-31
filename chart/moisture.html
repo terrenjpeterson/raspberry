@@ -68,7 +68,7 @@
         // call an API to get current data
         var xhttp = new XMLHttpRequest();
             xhttp.addEventListener("load", buildGraph, false);
-            xhttp.open("GET", "https://ynwvqnbg2j.execute-api.us-west-2.amazonaws.com/prod");
+            xhttp.open("GET", "https://ynwvqnbg2j.execute-api.us-west-2.amazonaws.com/prod?sensorId=0");
             xhttp.send();
 
         // this function builds the chart the initial time
@@ -76,11 +76,12 @@
           var dataReturned = xhttp.response;
           var probeData = eval('(' + dataReturned + ')');
           var probeMoisture = Number(probeData.relative_moisture);
+          var probeLabel = probeData.plant_id;
 
           // the data variable is what contains the metrics for the chart and used in the draw() function
           var dataMoisture = google.visualization.arrayToDataTable([
             ['Label', 'Value'],
-            ['Percent', probeMoisture]
+            [probeLabel, probeMoisture]
           ]);
 
           // this sets the options for the chart, and is used in the draw() function
