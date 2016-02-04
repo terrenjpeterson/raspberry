@@ -79,3 +79,15 @@ time.sleep(1)
 moisture_channel = 1
 plant_identifier = 'T-1-4'
 reading = StoreReading(moisture_channel,plant_identifier)
+
+time.sleep(1)
+
+moisture_channel = 2
+plant_identifier = 'C-2-8'
+reading = StoreReading(moisture_channel,plant_identifier)
+
+time.sleep(1)
+
+moisture_channel = 3
+plant_identifier = 'B-1-6'
+reading = StoreReading(moisture_channel,plant_identifier)
