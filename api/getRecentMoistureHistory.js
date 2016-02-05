@@ -26,8 +26,8 @@ exports.handler = function(event, context) {
 
         day = (day < 10 ? "0" : "") + day;
         
-    //var dataFile = year + month + day + 'moisture.json';
-    dataFile = '20160131-moisture.json';
+    var dataFile = year + month + day + '-moisture.json';
+    //dataFile = '20160131-moisture.json';
     
     // pull the history array for a given day
     
@@ -58,24 +58,18 @@ exports.handler = function(event, context) {
         var sumAbsMoisture = [];
         var sampleReadings = [];
         
-        sumRelMoisture[0] = 0;
-        sumAbsMoisture[0] = 0;
-        sampleReadings[0] = 0;
-        
-        sumRelMoisture[1] = 0;
-        sumAbsMoisture[1] = 0;
-        sampleReadings[1] = 0;
+        for (k = 0; k < 4; k++) {
+            sumRelMoisture[k] = 0;
+            sumAbsMoisture[k] = 0;
+            sampleReadings[k] = 0;
+        }
 
         // then return the summary array back to the caller
         
         //for (i = 0; i < 100; i++) {
         for (i = 0; i < histDataArray.length; i++) {
-            // since sensor data doesn't exist - create
-            if (histDataArray[i].plantId == 'T-1-4')
-              plantId = 1;
-            else
-              plantId = 0;
-            
+            plantId = histDataArray[i].sensorId;
+
             // add current reading to appropriate plant array
             sumRelMoisture[plantId] += histDataArray[i].relativeMoisture;
             sumAbsMoisture[plantId] += histDataArray[i].absoluteMoisture;
@@ -103,9 +97,25 @@ exports.handler = function(event, context) {
                     sensor1.absoluteMoisture = sumAbsMoisture[1]/sampleReadings[1];
                     sensor1.readings = sampleReadings[1];
 
+                var sensor2 = {};
+                    sensor2.sensorId = '2';
+                    sensor2.plantId = 'C-2-8';
+                    sensor2.relativeMoisture = sumRelMoisture[2]/sampleReadings[2];
+                    sensor2.absoluteMoisture = sumAbsMoisture[2]/sampleReadings[2];
+                    sensor2.readings = sampleReadings[2];
+
+                var sensor3 = {};
+                    sensor3.sensorId = '3';
+                    sensor3.plantId = 'B-1-6';
+                    sensor3.relativeMoisture = sumRelMoisture[3]/sampleReadings[3];
+                    sensor3.absoluteMoisture = sumAbsMoisture[3]/sampleReadings[3];
+                    sensor3.readings = sampleReadings[3];
+
                 var sensorReadings = [];
                     sensorReadings.push(sensor0);
                     sensorReadings.push(sensor1);
+                    sensorReadings.push(sensor2);
+                    sensorReadings.push(sensor3);
                     
                     aveReading.readings = sensorReadings;
 
@@ -114,14 +124,12 @@ exports.handler = function(event, context) {
                 // then reset temp variables
                 j = 1;
                 
-                sumRelMoisture[0] = 0;
-                sumAbsMoisture[0] = 0;
-                sampleReadings[0] = 0;
-                
-                sumRelMoisture[1] = 0;
-                sumAbsMoisture[1] = 0;
-                sampleReadings[1] = 0;
-                
+                for (k = 0; k < 4; k++) {
+                    sumRelMoisture[k] = 0;
+                    sumAbsMoisture[k] = 0;
+                    sampleReadings[k] = 0;
+                }
+
             } else { 
                 // increment interval counter and add current sensor readings for average
                 j++;
