@@ -90,6 +90,8 @@
               heading.push('Time');
               heading.push('Lettuce');
               heading.push('Tomato');
+              heading.push('Cilantro');
+              heading.push('Beans');
 
           moistureArray.push(heading);
 
@@ -104,8 +106,9 @@
 	    // get the moisture readings from the array
 	    readingArray = tempArray[i].readings;
 
-            newRow.push(tempArray[i].readings[0].relativeMoisture);
-            newRow.push(tempArray[i].readings[1].relativeMoisture);
+            for (k = 0; k < 4; k++) {
+              newRow.push(tempArray[i].readings[k].relativeMoisture);
+            }
 
 	    // with the new row, add it to the moisture array that will be used in the chart
             moistureArray.push(newRow);
@@ -119,7 +122,9 @@
             height: 600,
             series: {
               0: {targetAxisIndex: 0},
-              1: {targetAxisIndex: 0}
+              1: {targetAxisIndex: 0},
+              2: {targetAxisIndex: 0},
+              3: {targetAxisIndex: 0}
             },
             hAxis: {
               min: 0,
