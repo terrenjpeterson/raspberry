@@ -61,11 +61,13 @@ app.post('/post', function(req, res){
             // Assume error indicates that no current reading has been entered
             var histDataArray = [];
 
+            var saveData = JSON.stringify(histDataArray);
+
             var s3 = new AWS.S3();
             var histParams = {Bucket: dataBucket,
                               Key: pathDate + '.json',
                               ACL: 'public-read',
-                              Body: histDataArray };
+                              Body: saveData };
 
             s3.putObject(histParams, function(err, data) {
               if (err) {
@@ -171,12 +173,14 @@ app.post('/saveMoistureReading', function(req, res){
             // assume error is due to first entry not being there
             var histDataArray = [];
 
+            var saveData = JSON.stringify(histDataArray);
+
             var s3 = new AWS.S3();
 
             var histParams = {Bucket: dataBucket,
                               Key: pathDate + '-moisture.json',
                               ACL: 'public-read',
-                              Body: histDataArray };
+                              Body: saveData };
 
             s3.putObject(histParams, function(err, data) {
               if (err) {
