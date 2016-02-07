@@ -58,9 +58,23 @@ app.post('/post', function(req, res){
 
         s3.getObject(priorHistParams, function(err, data) {
           if(err) {
-            // TODO: add logic to handle first reading of a day
-            console.log("error finding history array: " + err);
+            // Assume error indicates that no current reading has been entered
             var histDataArray = [];
+
+            var s3 = new AWS.S3();
+            var histParams = {Bucket: dataBucket,
+                              Key: pathDate + '.json',
+                              ACL: 'public-read',
+                              Body: histDataArray };
+
+            s3.putObject(histParams, function(err, data) {
+              if (err) {
+                console.log("Error uploading history data: ", err);
+                } else {
+                console.log("Successfully uploaded blank history entry");
+              }
+            });
+
           } else { 
 
             var histDataArray = eval('(' + data.Body + ')');
@@ -154,9 +168,24 @@ app.post('/saveMoistureReading', function(req, res){
 
         s3.getObject(priorHistParams, function(err, data) {
           if(err) {
-            // TODO: add logic to handle first reading of a day
-            console.log("error finding history array: " + err);
+            // assume error is due to first entry not being there
             var histDataArray = [];
+
+            var s3 = new AWS.S3();
+
+            var histParams = {Bucket: dataBucket,
+                              Key: pathDate + '-moisture.json',
+                              ACL: 'public-read',
+                              Body: histDataArray };
+
+            s3.putObject(histParams, function(err, data) {
+              if (err) {
+                console.log("Error uploading history data: ", err);
+                } else {
+                console.log("Successfully uploaded blank moisture history");
+              }
+            });
+
           } else {
 
             var histDataArray = eval('(' + data.Body + ')');
