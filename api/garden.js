@@ -119,12 +119,12 @@ app.post('/post', function(req, res){
             var params = {
                 TableName: dbTable,
                 Item: { // a map of attribute name to AttributeValue
-                    readingId:        { S: convData.read_time + convData.read_date },
-                    readingDate:      { S: convData.read_date },
-                    sensor:           { S: convData.sensor },
-                    readingTime:      { S: convData.read_time },
-                    relativeMoisture: { S: convData.temperature },
-                    absoluteMoisture: { S: convData.humidity }
+                    readingId:   { S: convData.read_time + convData.read_date },
+                    readingDate: { S: convData.read_date },
+                    sensor:      { S: convData.sensor },
+                    readingTime: { S: convData.read_time },
+                    temperature: { S: convData.temperature },
+                    humidity:    { S: convData.humidity }
                 }
             };
 
