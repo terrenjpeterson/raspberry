@@ -225,7 +225,29 @@ app.post('/saveMoistureReading', function(req, res){
               }
             });
 
-            // then return the call back to the HTTP request
+            // add a history row to the DynamoDB table
+
+            var db = new AWS.DynamoDB();
+
+            var dbTable = 'MoistureReadings';
+
+            var params = {
+                TableName: dbTable,
+                Item: { // a map of attribute name to AttributeValue
+                    readingId: { S: convData.read_time + convData.read_date + convData.plant_id },
+                    readingDate: { S: convData.read_date },
+                    sensorId: { S: convData.sensor_channel.toString() },
+                    readingTime: { S: convData.read_time },
+                    relativeMoisture: { N: convData.relative_moisture.toString() },
+                    absoluteMoisture: { N: convData.absolute_moisture.toString() },
+                    plantId: { S: convData.plant_id }
+                }
+            };
+    
+            db.putItem(params, function(err, data) {
+                if (err) console.log(err); // an error occurred
+//                else console.log(data); // successful response
+            });
 
             res.send('Received Data');
           }
