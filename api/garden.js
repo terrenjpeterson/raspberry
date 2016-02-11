@@ -110,7 +110,28 @@ app.post('/post', function(req, res){
               }
             });
 
-            // then return the call back to the HTTP request
+            // add a history row to the DynamoDB table
+
+            var db = new AWS.DynamoDB();
+
+            var dbTable = 'HumidTempReadings';
+
+            var params = {
+                TableName: dbTable,
+                Item: { // a map of attribute name to AttributeValue
+                    readingId:        { S: convData.read_time + convData.read_date },
+                    readingDate:      { S: convData.read_date },
+                    sensor:           { S: convData.sensor },
+                    readingTime:      { S: convData.read_time },
+                    relativeMoisture: { S: convData.temperature },
+                    absoluteMoisture: { S: convData.humidity }
+                }
+            };
+
+            db.putItem(params, function(err, data) {
+                if (err) console.log(err); // an error occurred
+//                else console.log(data); // successful response
+            });
 
             res.send('Received Data');
           }
