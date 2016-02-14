@@ -37,11 +37,20 @@ app.post('/post', function(req, res){
 
     var pathDate = sensorDate.substring(0,4) + sensorDate.substring(5,7) + sensorDate.substring(8,10);
 
+    // determining which raspberry pi is reporting in
+
+    var location = eval('(' + currData + ')').location;
+
+    if (location == 'IndoorGarden')
+      {currentSensorProxy = 'current.json';}
+    else
+      {currentSensorProxy = 'coldFrame.json';}
+
     // first overwrite current data to display on dashboard
 
     var s3 = new AWS.S3();
     var params = {Bucket: dataBucket,
-                  Key: 'current.json',
+                  Key: currentSensorProxy,
                   ACL: 'public-read',
                   Body: currData };
 
@@ -89,6 +98,7 @@ app.post('/post', function(req, res){
                 histData.readTime = convData.read_time;
                 histData.temp     = convData.temperature;
                 histData.humidity = convData.humidity;
+                histData.location = convData.location;
 
             histDataArray.push(histData);
 
@@ -124,7 +134,8 @@ app.post('/post', function(req, res){
                     sensor:      { S: convData.sensor },
                     readingTime: { S: convData.read_time },
                     temperature: { S: convData.temperature },
-                    humidity:    { S: convData.humidity }
+                    humidity:    { S: convData.humidity },
+                    location:    { S: convData.location }
                 }
             };
 

@@ -37,6 +37,7 @@ f = open('datafile.dat', 'a')
 # create an object that will be used to persist the data and set the sensor attribute name
 data = {}
 data['sensor'] = 'AM2302'
+data['location'] = 'IndoorGarden'
 
 # establish the endpoint that the API will be located at 
 Apiurl = 'http://ec2-52-34-244-227.us-west-2.compute.amazonaws.com:8080/post'
