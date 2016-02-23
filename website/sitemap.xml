@@ -13,6 +13,14 @@
       <image:loc>https://s3-us-west-2.amazonaws.com/robot-gardener/images/20160215_low.jpg</image:loc>
       <image:title>Indoor Garden</image:title>
     </image:image>
+    <image:image>
+      <image:loc>https://s3-us-west-2.amazonaws.com/robot-gardener/images/cilantro-20160205.jpg</image:loc>
+      <image:title>Young Cilantro Plants</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://s3-us-west-2.amazonaws.com/robot-gardener/images/cold-frame-20160213.jpg</image:loc>
+      <image:title>Cold Frame Construction</image:title>
+    </image:image>
   </url>
   <url>
     <loc>http://www.robotgardening.com/design.html</loc>
