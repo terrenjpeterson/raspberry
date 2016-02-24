@@ -9,16 +9,35 @@ console.log('starting to execute function');
 exports.handler = function(event, context) {
     // start executing function
     console.log('processing request');
+
     // leverage dynamo DB
     var dynamodb = new AWS.DynamoDB({region: 'us-west-2'});
+
     // set the reading Date
-    var readingDate = '2016-02-15';
+    var date = new Date();
+    
+    var year = date.getFullYear();
+    
+    var month = date.getMonth() + 1;
+        month = (month < 10 ? "0" : "") + month;
+        
+    var day = date.getDate();
+
+    // adjust for current timezone as EST is five hours behind UTC
+    if (date.getHours() < 5) {day = day - 1}
+
+        day = (day < 10 ? "0" : "") + day;
+        
+    var readingDate = year + '-' + month + '-' + day;
+
     //console.log('passed in variable: ' + event.readDate);
     // set the location based on what was passed in 
     var location = event.location;
+
     // set the parameters for the function
     var bucketInterval = 10; // this represents the number of minutes
     var totalBuckets = 24 * ( 60 / bucketInterval );
+
     // set parameters to do a scan based on reading date
     var params = {
         TableName : 'HumidTempReadings',
