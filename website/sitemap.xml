@@ -2,12 +2,12 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>http://www.robotgardening.com/index.html</loc>
-    <lastmod>2016-02-20</lastmod>
+    <lastmod>2016-03-05</lastmod>
     <changefreq>weekly</changefreq>
   </url>
   <url>
     <loc>http://www.robotgardening.com/blog.html</loc>
-    <lastmod>2016-02-21</lastmod>
+    <lastmod>2016-03-05</lastmod>
     <changefreq>weekly</changefreq>
     <image:image>
       <image:loc>https://s3-us-west-2.amazonaws.com/robot-gardener/images/20160215_low.jpg</image:loc>
@@ -20,6 +20,23 @@
     <image:image>
       <image:loc>https://s3-us-west-2.amazonaws.com/robot-gardener/images/cold-frame-20160213.jpg</image:loc>
       <image:title>Cold Frame Construction</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>http://www.robotgardening.com/watermelon.html</loc>
+    <lastmod>2016-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <image:image>
+      <image:loc>https://s3-us-west-2.amazonaws.com/robot-gardener/images/watermelon_seed.jpg</image:loc>
+      <image:title>Watermelon Seed Package</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://s3-us-west-2.amazonaws.com/robot-gardener/images/watermelon_20160203.jpg</image:loc>
+      <image:title>Watermelon Plant Germinated</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://s3-us-west-2.amazonaws.com/robot-gardener/images/watermelon_20160305.jpg</image:loc>
+      <image:title>Young Watermelon Vine</image:title>
     </image:image>
   </url>
   <url>
